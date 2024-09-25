@@ -25,7 +25,7 @@ export class TasksController {
   async create(@Body() createTaskDto: CreateTaskDto, @Res() res: Response) {
     const taskCreated = await this.tasksService.create(createTaskDto);
 
-    return this.response.responseSuccess(res, taskCreated, 401, 'sss');
+    return this.response.responseSuccess(res, taskCreated);
   }
 
   @Get()
