@@ -35,7 +35,9 @@ providers:
 controllers: 
     + Dùng để import controller
 
-
+dto:
+    + DTO là một đối tượng được sử dụng để truyền dữ liệu giữa các lớp hoặc phương thức. 
+      DTO thường dùng trong các API để nhận và gửi dữ liệu.
 
 Câu hỏi chưa được giải đáp:
 1. Khi nào thì import vào phần imports của module
