@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { TasksRepository } from '@/modules/tasks/tasks.repository';
@@ -14,30 +18,32 @@ export class TasksService {
     return this.taskRepository.findAllTask();
   }
 
-  findOne(id: number) {
-    return this.taskRepository.getOneTask(id);
-  }
+  async findOne(id: number) {
+    const findOneTask = await this.taskRepository.getOneTask(id);
 
-  async update(id: number, updateTaskDto: UpdateTaskDto) {
-    try {
-      const findTaskById = await this.taskRepository.getOneTask(id);
-
-      console.log('findTaskById', findTaskById);
-
-      if (!findTaskById) {
-        throw new NotFoundException(`id not found`);
-      }
-    } catch (e) {
-      console.log('e', e);
+    if (!findOneTask) {
       throw new NotFoundException(`id not found`);
     }
 
-    // console.log('findTaskById', findTaskById);
-    //
-    // if (!findTaskById) {
-    //   throw new NotFoundException(`id not found`);
-    // }
-    // return this.taskRepository.updateTask(id, updateTaskDto);
+    return findOneTask;
+  }
+
+  async update(id: number, updateTaskDto: UpdateTaskDto) {
+    // Không cần try-catch nếu chỉ muốn để NestJS tự động xử lý ngoại lệ
+    const findOneTask = await this.taskRepository.getOneTask(id);
+
+    // Nếu không tìm thấy task, ném ra ngoại lệ NotFoundException
+    if (!findOneTask) {
+      throw new NotFoundException(`Task with ID ${id} not found`);
+    }
+
+    // Thực hiện cập nhật task
+    await this.taskRepository.updateTask(id, updateTaskDto);
+
+    // Lấy lại task đã cập nhật và trả về
+    const updatedTask = await this.taskRepository.getOneTask(id);
+
+    return updatedTask;
   }
 
   async remove(id: number) {
