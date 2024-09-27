@@ -29,18 +29,14 @@ export class TasksService {
   }
 
   async update(id: number, updateTaskDto: UpdateTaskDto) {
-    // Không cần try-catch nếu chỉ muốn để NestJS tự động xử lý ngoại lệ
     const findOneTask = await this.taskRepository.getOneTask(id);
 
-    // Nếu không tìm thấy task, ném ra ngoại lệ NotFoundException
     if (!findOneTask) {
       throw new NotFoundException(`Task with ID ${id} not found`);
     }
 
-    // Thực hiện cập nhật task
     await this.taskRepository.updateTask(id, updateTaskDto);
 
-    // Lấy lại task đã cập nhật và trả về
     const updatedTask = await this.taskRepository.getOneTask(id);
 
     return updatedTask;
