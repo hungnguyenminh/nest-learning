@@ -7,9 +7,6 @@ import { PaginationDto } from '@/helpers/paginationDto';
 @Injectable()
 export class TasksService {
   constructor(private readonly taskRepository: TasksRepository) {}
-  create(createTaskDto: CreateTaskDto) {
-    return this.taskRepository.createTask(createTaskDto);
-  }
 
   // findAll() {
   //   return this.taskRepository.findAllTask();
@@ -30,6 +27,10 @@ export class TasksService {
         currentPage: page,
       },
     };
+  }
+
+  create(createTaskDto: CreateTaskDto) {
+    return this.taskRepository.createTask(createTaskDto);
   }
 
   async findOne(id: number) {

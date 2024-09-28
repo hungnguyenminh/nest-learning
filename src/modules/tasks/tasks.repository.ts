@@ -14,7 +14,7 @@ export class TasksRepository {
 
   async createTask(task: CreateTaskDto): Promise<TaskEntity> {
     // Sử dụng taskRepository để tạo và lưu task
-    const createTask = this.taskRepository.create(task); // Sử dụng taskRepository để gọi create
+    const createTask = await this.taskRepository.create(task); // Sử dụng taskRepository để gọi create
 
     return this.taskRepository.save(createTask); // Sử dụng taskRepository để gọi save
   }

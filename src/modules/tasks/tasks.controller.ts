@@ -23,13 +23,6 @@ export class TasksController {
     private readonly response: ResponseHelper,
   ) {}
 
-  @Post()
-  async create(@Body() createTaskDto: CreateTaskDto, @Res() res: Response) {
-    const taskCreated = await this.tasksService.create(createTaskDto);
-
-    return this.response.responseSuccess(res, taskCreated);
-  }
-
   // @Get()
   // async findAll(@Res() res: Response) {
   //   const findAllTask = await this.tasksService.findAll();
@@ -49,6 +42,23 @@ export class TasksController {
     const findTask = await this.tasksService.findOne(id);
 
     return this.response.responseSuccess(res, findTask);
+  }
+
+  @Post()
+  async create(@Body() createTaskDto: CreateTaskDto, @Res() res: Response) {
+    const taskCreated = await this.tasksService.create(createTaskDto);
+
+    return this.response.responseSuccess(res, taskCreated);
+  }
+
+  @Post()
+  async addUserToTask(
+    @Body() createTaskDto: CreateTaskDto,
+    @Res() res: Response,
+  ) {
+    const taskCreated = await this.tasksService.create(createTaskDto);
+
+    return this.response.responseSuccess(res, taskCreated);
   }
 
   @Put(':id')
