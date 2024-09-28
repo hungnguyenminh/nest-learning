@@ -29,6 +29,10 @@ export class TasksService {
     };
   }
 
+  async addUserToTask(taskId: number, userId: number) {
+    return await this.taskRepository.addUserToTask(taskId, userId);
+  }
+
   create(createTaskDto: CreateTaskDto) {
     return this.taskRepository.createTask(createTaskDto);
   }
@@ -42,6 +46,8 @@ export class TasksService {
 
     return findOneTask;
   }
+
+  // Thêm User vào Task
 
   async update(id: number, updateTaskDto: UpdateTaskDto) {
     const findOneTask = await this.taskRepository.getOneTask(id);

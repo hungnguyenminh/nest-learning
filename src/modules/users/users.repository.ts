@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Like, Repository } from 'typeorm';
 import { UserEntity } from '@/modules/users/entities/user.entity';
 import { CreateUserDto } from '@/modules/users/dto/create-user.dto';
-import { TaskEntity } from '@/modules/tasks/entities/task.entity';
 
 @Injectable()
 export class UsersRepository {
@@ -16,6 +15,14 @@ export class UsersRepository {
     const createUser = await this.userRepository.create(userDto);
 
     return this.userRepository.save(createUser);
+  }
+
+  async findOne(id: number) {
+    return await this.userRepository.findOne({
+      where: {
+        id,
+      },
+    });
   }
 
   async findAllTask(

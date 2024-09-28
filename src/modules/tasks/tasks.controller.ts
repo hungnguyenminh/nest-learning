@@ -15,6 +15,7 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 import { ResponseHelper } from '@/helpers/responseHelper';
 import { Response } from 'express';
 import { PaginationDto } from '@/helpers/paginationDto';
+import { AddUserToTaskDto } from '@/modules/tasks/dto/add_user_to_task.dto';
 
 @Controller('tasks')
 export class TasksController {
@@ -51,12 +52,15 @@ export class TasksController {
     return this.response.responseSuccess(res, taskCreated);
   }
 
-  @Post()
+  @Post('/add-user-to-task')
   async addUserToTask(
-    @Body() createTaskDto: CreateTaskDto,
+    @Body() createTaskDto: AddUserToTaskDto,
     @Res() res: Response,
   ) {
-    const taskCreated = await this.tasksService.create(createTaskDto);
+    const taskCreated = await this.tasksService.addUserToTask(
+      createTaskDto.task_id,
+      createTaskDto.user_id,
+    );
 
     return this.response.responseSuccess(res, taskCreated);
   }
