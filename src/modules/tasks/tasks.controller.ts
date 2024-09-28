@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Res,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
@@ -13,6 +14,7 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { ResponseHelper } from '@/helpers/responseHelper';
 import { Response } from 'express';
+import { PaginationDto } from '@/helpers/paginationDto';
 
 @Controller('tasks')
 export class TasksController {
@@ -28,9 +30,16 @@ export class TasksController {
     return this.response.responseSuccess(res, taskCreated);
   }
 
+  // @Get()
+  // async findAll(@Res() res: Response) {
+  //   const findAllTask = await this.tasksService.findAll();
+  //
+  //   return this.response.responseSuccess(res, findAllTask);
+  // }
+
   @Get()
-  async findAll(@Res() res: Response) {
-    const findAllTask = await this.tasksService.findAll();
+  async findAll(@Query() paginationDto: PaginationDto, @Res() res: Response) {
+    const findAllTask = await this.tasksService.findAll(paginationDto);
 
     return this.response.responseSuccess(res, findAllTask);
   }

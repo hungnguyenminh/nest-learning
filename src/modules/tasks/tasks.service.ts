@@ -1,11 +1,8 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { TasksRepository } from '@/modules/tasks/tasks.repository';
+import { PaginationDto } from '@/helpers/paginationDto';
 
 @Injectable()
 export class TasksService {
@@ -14,8 +11,25 @@ export class TasksService {
     return this.taskRepository.createTask(createTaskDto);
   }
 
-  findAll() {
-    return this.taskRepository.findAllTask();
+  // findAll() {
+  //   return this.taskRepository.findAllTask();
+  // }
+  async findAll(paginationDto: PaginationDto) {
+    const { page, limit, search } = paginationDto;
+    const { tasks, total, totalPage } = await this.taskRepository.findAllTask(
+      page,
+      limit,
+      search,
+    );
+
+    return {
+      data: tasks,
+      pagination: {
+        totalItems: total,
+        totalPage,
+        currentPage: page,
+      },
+    };
   }
 
   async findOne(id: number) {
