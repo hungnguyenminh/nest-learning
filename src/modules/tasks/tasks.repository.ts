@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Like, Repository, UpdateResult } from 'typeorm';
 import { CreateTaskDto } from '@/modules/tasks/dto/create-task.dto';
