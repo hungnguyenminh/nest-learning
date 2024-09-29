@@ -7,6 +7,7 @@ import { AdminsModule } from './modules/admins/admins.module';
 import { PostsModule } from './modules/posts/posts.module';
 import { ProfilesModule } from './modules/profiles/profiles.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { SharedModule } from '@/modules/share_module.module';
 
 @Module({
   imports: [
@@ -28,12 +29,13 @@ import { AuthModule } from './modules/auth/auth.module';
         synchronize: true, // Đừng bật trong môi trường production
       }),
     }),
-    TasksModule,
-    UsersModule,
-    AdminsModule,
-    PostsModule,
-    ProfilesModule,
-    AuthModule,
+    // TasksModule,
+    // UsersModule,
+    // AdminsModule,
+    // PostsModule,
+    // ProfilesModule,
+    // AuthModule,
+    SharedModule,
   ],
 })
 export class AppModule {}
