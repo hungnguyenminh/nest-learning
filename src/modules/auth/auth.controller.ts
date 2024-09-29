@@ -11,6 +11,7 @@ import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
 import { LocalGuard } from '@/modules/auth/guards/local.guard';
 import { JwtGuards } from '@/modules/auth/guards/jwt.guards';
+import { Request } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -30,8 +31,7 @@ export class AuthController {
 
   @Get('status')
   @UseGuards(JwtGuards)
-  // status(@Req() req: Request) {
-  status(@Req() req: any) {
+  status(@Req() req: Request) {
     console.log('inside get controller');
     console.log('req', req.user);
 
