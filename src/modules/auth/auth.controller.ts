@@ -12,13 +12,16 @@ import { AuthDto } from './dto/auth.dto';
 import { LocalGuard } from '@/modules/auth/guards/local.guard';
 import { JwtGuards } from '@/modules/auth/guards/jwt.guards';
 import { Request } from 'express';
+import { MailerService } from '@nestjs-modules/mailer';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private mailService: MailerService,
+  ) {}
 
   @Post('login')
-  @UseGuards(LocalGuard)
   create(@Body() authDto: AuthDto) {
     const user = this.authService.validateUser(authDto);
 
@@ -36,5 +39,31 @@ export class AuthController {
     console.log('req', req.user);
 
     return req.user;
+  }
+
+  @Get('mail')
+  async testMail() {
+    await this.mailService
+      .sendMail({
+        to: 'hungnm.17k2@gmail.com',
+        subject: 'Testing Nest MailerModule ✔',
+        text: 'welcome',
+        html: '<b>welcome</b>',
+      })
+      .then((e) => {
+        console.log('e then', e);
+        return {
+          status: true,
+          message: e,
+        };
+      })
+      .catch((e) => {
+        console.log('e catch', e);
+        return {
+          status: false,
+          message: e,
+        };
+      });
+    return 'ok';
   }
 }
