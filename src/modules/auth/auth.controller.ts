@@ -46,9 +46,13 @@ export class AuthController {
     await this.mailService
       .sendMail({
         to: 'hungnm.17k2@gmail.com',
-        subject: 'Testing Nest MailerModule ✔',
+        subject: 'Iu em <3',
         text: 'welcome',
-        html: '<b>welcome</b>',
+        template: 'register',
+        context: {
+          name: 'name',
+          activationCode: 'activationCode',
+        },
       })
       .then((e) => {
         console.log('e then', e);

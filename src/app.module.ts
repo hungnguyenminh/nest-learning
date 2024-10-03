@@ -41,21 +41,19 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
           auth: {
             user: configService.get<string>('MAILDEV_INCOMING_USER'),
             pass: configService.get<string>('MAILDEV_INCOMING_PASS'),
-            // user: 'hungnm@vietts.io',
-            // pass: 'hjpktevcwqnynjxn',
           },
         },
         defaults: {
-          from: '"No Reply" <no-reply@localhost>',
+          from: `"No Reply" <no-reply@localhost>`,
         },
-        preview: true,
-        // template: {
-        //   dir: process.cwd() + '/template/',
-        //   adapter: new HandlebarsAdapter(), // or new PugAdapter() or new EjsAdapter()
-        //   options: {
-        //     strict: true,
-        //   },
-        // },
+        // preview: true,
+        template: {
+          dir: process.cwd() + '/src/mail/templates/',
+          adapter: new HandlebarsAdapter(), // or new PugAdapter() or new EjsAdapter()
+          options: {
+            strict: true,
+          },
+        },
       }),
     }),
     TasksModule,
