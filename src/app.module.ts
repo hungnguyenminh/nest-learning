@@ -13,11 +13,8 @@ import { PaymentModule } from './modules/payment/payment.module';
 import { OrderProductModule } from './modules/order_product/order_product.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { CartsModule } from './modules/carts/carts.module';
-import { CartProductModule } from './modules/cart_product/cart_product.module';
-import { ProductsModule } from './modules/products/products.module';
-import { ProductsModule } from './modules/products/products.module';
-import { CartProductModule } from './modules/cart_product/cart_product.module';
-import { CategoriesModule } from './modules/categories/categories.module';
+import { ProductsModule } from '@/modules/products/products.module';
+import { CartProductModule } from '@/modules/cart_product/cart_product.module';
 
 @Module({
   imports: [

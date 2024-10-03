@@ -1,1 +1,47 @@
-export class Sale {}
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+
+@Entity({ name: 'sales' })
+export class Sale {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  user_id: string;
+
+  @Column()
+  agency_parent: string;
+
+  @Column()
+  agency_children: string;
+
+  @Column()
+  total_order: string;
+
+  @Column()
+  total_price: string;
+
+  @Column()
+  total_commission_price: string;
+
+  @CreateDateColumn({
+    name: 'created_at',
+  })
+  created_at: Date;
+
+  @UpdateDateColumn({
+    name: 'updated_at',
+  })
+  updated_at: Date;
+
+  @DeleteDateColumn({
+    name: 'deleted_at',
+  })
+  deleted_at: Date;
+}
