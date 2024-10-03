@@ -1,14 +1,23 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TasksModule } from '@/modules/tasks/tasks.module';
 import { UsersModule } from './modules/users/users.module';
-import { AdminsModule } from './modules/admins/admins.module';
-import { PostsModule } from './modules/posts/posts.module';
-import { ProfilesModule } from './modules/profiles/profiles.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { CategoriesModule } from './modules/categories/categories.module';
+import { CommissionsModule } from './modules/commissions/commissions.module';
+import { SettingModule } from './modules/setting/setting.module';
+import { SaleModule } from './modules/sale/sale.module';
+import { PaymentModule } from './modules/payment/payment.module';
+import { OrderProductModule } from './modules/order_product/order_product.module';
+import { OrdersModule } from './modules/orders/orders.module';
+import { CartsModule } from './modules/carts/carts.module';
+import { CartProductModule } from './modules/cart_product/cart_product.module';
+import { ProductsModule } from './modules/products/products.module';
+import { ProductsModule } from './modules/products/products.module';
+import { CartProductModule } from './modules/cart_product/cart_product.module';
+import { CategoriesModule } from './modules/categories/categories.module';
 
 @Module({
   imports: [
@@ -56,12 +65,18 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
         },
       }),
     }),
-    TasksModule,
     UsersModule,
-    AdminsModule,
-    PostsModule,
-    ProfilesModule,
     AuthModule,
+    CategoriesModule,
+    ProductsModule,
+    CartProductModule,
+    CartsModule,
+    OrdersModule,
+    OrderProductModule,
+    PaymentModule,
+    SaleModule,
+    SettingModule,
+    CommissionsModule,
   ],
 })
 export class AppModule {}
