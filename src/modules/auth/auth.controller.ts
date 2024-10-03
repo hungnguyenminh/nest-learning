@@ -8,7 +8,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthDto } from './dto/auth.dto';
+import { AuthDto, RegisterUserDto } from './dto/auth.dto';
 import { LocalGuard } from '@/modules/auth/guards/local.guard';
 import { JwtGuards } from '@/modules/auth/guards/jwt.guards';
 import { Request } from 'express';
@@ -22,7 +22,7 @@ export class AuthController {
   ) {}
 
   @Post('login')
-  create(@Body() authDto: AuthDto) {
+  login(@Body() authDto: AuthDto) {
     const user = this.authService.validateUser(authDto);
 
     if (!user) {
@@ -30,6 +30,11 @@ export class AuthController {
     }
 
     return user;
+  }
+
+  @Post('register')
+  register(@Body() registerDto: RegisterUserDto) {
+    return registerDto;
   }
 
   @Get('status')

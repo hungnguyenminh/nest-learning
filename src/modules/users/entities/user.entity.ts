@@ -3,11 +3,9 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { TaskEntity } from '@/modules/tasks/entities/task.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity {
@@ -15,19 +13,28 @@ export class UserEntity {
   id: number;
 
   @Column()
-  phone_number: string;
+  full_name: string;
 
   @Column()
-  user_name: string;
+  phone_number: string;
 
   @Column()
   email: string;
 
   @Column()
-  name: string;
+  address: string;
 
   @Column()
-  customer_code: string;
+  agency_code: string;
+
+  @Column()
+  agency_level: number;
+
+  @Column()
+  referal_agent_code: string;
+
+  @Column()
+  sales: number;
 
   @Column()
   password: string;
@@ -46,7 +53,4 @@ export class UserEntity {
     name: 'deleted_at',
   })
   deleted_at: Date;
-
-  @ManyToMany(() => TaskEntity, (task) => task.users)
-  tasks: TaskEntity[];
 }
