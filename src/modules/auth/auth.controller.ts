@@ -5,20 +5,23 @@ import {
   HttpException,
   Post,
   Req,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto, RegisterUserDto } from './dto/auth.dto';
-import { LocalGuard } from '@/modules/auth/guards/local.guard';
 import { JwtGuards } from '@/modules/auth/guards/jwt.guards';
 import { Request } from 'express';
 import { MailerService } from '@nestjs-modules/mailer';
+import { ResponseHelper } from '@/helpers/responseHelper';
+import { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private mailService: MailerService,
+    private readonly response: ResponseHelper,
   ) {}
 
   @Post('login')
@@ -33,8 +36,19 @@ export class AuthController {
   }
 
   @Post('register')
-  register(@Body() registerDto: RegisterUserDto) {
-    return registerDto;
+  async register(@Body() registerDto: RegisterUserDto, @Res() res: Response) {
+    const register = await this.authService.register(registerDto);
+
+    console.log('register', register);
+
+    if (register) {
+      return this.response.responseSuccess(res, register);
+    }
+
+    return this.response.responseErrors({
+      res: res,
+      message: 'người dùng đã tồn tại',
+    });
   }
 
   @Get('status')

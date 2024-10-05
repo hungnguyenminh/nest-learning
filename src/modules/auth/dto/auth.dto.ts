@@ -1,12 +1,25 @@
+import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
+import { Optional } from '@nestjs/common';
+
 export class AuthDto {
   username: string;
   password: string;
 }
 
 export class RegisterUserDto {
-  phone_number: string;
-  user_name: string;
+  @IsNotEmpty()
+  fullName: string;
+
+  @IsNotEmpty()
+  phoneNumber: string;
+
+  @IsEmail()
   email: string;
-  name: string;
+
+  @Optional()
+  address: string;
+
+  @IsNotEmpty()
+  @MinLength(6)
   password: string;
 }

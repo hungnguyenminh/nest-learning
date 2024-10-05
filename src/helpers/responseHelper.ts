@@ -20,13 +20,14 @@ export class ResponseHelper {
     };
     return res.status(code).send(response);
   }
-  responseErrors(
-    res: express.Response,
-    code = 400,
-    message: string | null,
-    data: any = null,
-  ) {
-    return res.status(code).send({
+  responseErrors(error: {
+    res: express.Response;
+    code?: number;
+    message: string | null;
+    data?: any;
+  }) {
+    const { res, message, data, code } = error;
+    return res.status(code ?? 400).send({
       meta: {
         status: false,
         message,

@@ -24,7 +24,7 @@ export class UserEntity {
   @Column({ type: 'varchar' })
   phoneNumber: string;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', unique: true })
   email: string;
 
   @Column({ type: 'varchar' })
@@ -55,7 +55,7 @@ export class UserEntity {
   cart: CartEntity;
 
   @OneToOne(() => SettingEntity, (setting) => setting.user)
-  setting: CartEntity;
+  setting: SettingEntity;
 
   @OneToMany(() => OrderEntity, (order) => order.user)
   orders: OrderEntity[];
