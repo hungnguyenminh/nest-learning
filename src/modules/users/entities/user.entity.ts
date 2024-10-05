@@ -33,11 +33,17 @@ export class UserEntity {
   @Column({ type: 'varchar' })
   password: string;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', nullable: true })
+  referrerCode: string;
+
+  @Column({ type: 'varchar', nullable: true })
   agencyCode: string;
 
-  @Column({ type: 'varchar' })
-  agencyLevel: string;
+  @Column({ nullable: true })
+  agencyLevel: number;
+
+  @Column({ default: true })
+  isActive: boolean;
 
   @CreateDateColumn()
   createdAt: Date;

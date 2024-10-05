@@ -9,18 +9,16 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthDto, RegisterUserDto } from './dto/auth.dto';
+import { AuthDto, RegisterUserDto, SendMailDto } from './dto/auth.dto';
 import { JwtGuards } from '@/modules/auth/guards/jwt.guards';
-import { Request } from 'express';
-import { MailerService } from '@nestjs-modules/mailer';
+import { Request, Response } from 'express';
 import { ResponseHelper } from '@/helpers/responseHelper';
-import { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    private mailService: MailerService,
+
     private readonly response: ResponseHelper,
   ) {}
 
@@ -37,9 +35,9 @@ export class AuthController {
 
   @Post('register')
   async register(@Body() registerDto: RegisterUserDto, @Res() res: Response) {
-    const register = await this.authService.register(registerDto);
+    console.log('registerDto', registerDto);
 
-    console.log('register', register);
+    const register = await this.authService.register(registerDto);
 
     if (register) {
       return this.response.responseSuccess(res, register);
@@ -60,33 +58,10 @@ export class AuthController {
     return req.user;
   }
 
-  @Get('mail')
+  @Post('mail')
   async testMail() {
-    await this.mailService
-      .sendMail({
-        to: 'hungnm.17k2@gmail.com',
-        subject: 'Iu em <3',
-        text: 'welcome',
-        template: 'register',
-        context: {
-          name: 'name',
-          activationCode: 'activationCode',
-        },
-      })
-      .then((e) => {
-        console.log('e then', e);
-        return {
-          status: true,
-          message: e,
-        };
-      })
-      .catch((e) => {
-        console.log('e catch', e);
-        return {
-          status: false,
-          message: e,
-        };
-      });
+    await this.authService.sendMail();
+
     return 'ok';
   }
 }

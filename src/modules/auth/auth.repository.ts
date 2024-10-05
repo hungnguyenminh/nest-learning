@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '@/modules/users/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -21,6 +21,21 @@ export class AuthRepository {
 
     if (!user) {
       console.log('user not found!');
+      return null;
+    }
+
+    return user;
+  }
+
+  async findUserByRefferCode(referrerCode: string) {
+    const user = await this.authRepository.find({
+      where: {
+        referrerCode: referrerCode,
+      },
+    });
+
+    if (!user) {
+      console.log('referrerCode not found!');
       return null;
     }
 

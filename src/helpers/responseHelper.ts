@@ -26,13 +26,11 @@ export class ResponseHelper {
     message: string | null;
     data?: any;
   }) {
-    const { res, message, data, code } = error;
-    return res.status(code ?? 400).send({
-      meta: {
-        status: false,
-        message,
-      },
-      data,
+    const { res, message, data, code = 400 } = error;
+    return res.status(code).send({
+      status: false,
+      message,
+      statusCode: code,
     });
   }
 }

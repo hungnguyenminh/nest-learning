@@ -14,7 +14,7 @@ import { OrdersModule } from './modules/orders/orders.module';
 import { CartsModule } from './modules/carts/carts.module';
 import { ProductsModule } from '@/modules/products/products.module';
 import { AttributesModule } from './modules/attributes/attributes.module';
-import { ResponseHelper } from '@/helpers/responseHelper';
+import { UserSeederModule } from '@/database/seeder/userSeeder/userSeeder.module';
 
 @Module({
   imports: [
@@ -62,6 +62,7 @@ import { ResponseHelper } from '@/helpers/responseHelper';
         },
       }),
     }),
+    UserSeederModule,
     UsersModule,
     AuthModule,
     CategoriesModule,

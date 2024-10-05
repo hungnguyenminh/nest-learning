@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { AuthDto, RegisterUserDto } from './dto/auth.dto';
+import { AuthDto, RegisterUserDto, SendMailDto } from './dto/auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import { MailerService } from '@nestjs-modules/mailer';
 import { AuthRepository } from '@/modules/auth/auth.repository';
-import { ResponseHelper } from '@/helpers/responseHelper';
+import { randomBytes } from 'crypto';
 
 const fakeUsers = [
   {
@@ -21,8 +21,8 @@ const fakeUsers = [
 export class AuthService {
   constructor(
     private jwtService: JwtService,
-    private mailService: MailerService,
     private authRepository: AuthRepository,
+    private mailService: MailerService,
   ) {}
   validateUser({ username, password }: AuthDto) {
     const findUser = fakeUsers.find((item) => item.username === username);
@@ -38,15 +38,58 @@ export class AuthService {
     }
   }
 
+  async sendMail() {
+    const otp = randomBytes(4).toString('hex').substring(0, 5).toUpperCase();
+
+    await this.mailService
+      .sendMail({
+        to: 'hungnm.17k2@gmail.com',
+        subject: otp,
+        text: 'welcome',
+        template: 'register',
+        context: {
+          name: 'sss',
+          activationCode: otp,
+        },
+      })
+      .then((e) => {
+        console.log('e then', e);
+        return {
+          status: true,
+          message: e,
+        };
+      })
+      .catch((e) => {
+        console.log('e catch', e);
+        return {
+          status: false,
+          message: e,
+        };
+      });
+    return 'ok';
+  }
+
   async register(registerDto: RegisterUserDto) {
-    const { fullName, password, email, phoneNumber, address } = registerDto;
+    const { email, agencyCode, agencyLevel } = registerDto;
 
     const findUser = await this.authRepository.findUserByEmail(email);
 
-    console.log('findUser', findUser);
+    const randomCodeRefferCode = randomBytes(4)
+      .toString('hex')
+      .substring(0, 7)
+      .toUpperCase();
 
-    if (findUser.length === 0) {
-      return await this.authRepository.createUser(registerDto);
+    const findUserByRefferCode =
+      await this.authRepository.findUserByRefferCode(randomCodeRefferCode);
+
+    if (findUser.length === 0 && findUserByRefferCode.length === 0) {
+      return await this.authRepository.createUser({
+        ...registerDto,
+        referrerCode: `LF-${randomCodeRefferCode}`,
+        agencyCode: agencyCode ?? null,
+        agencyLevel: agencyLevel ?? null,
+        isActive: !!agencyCode,
+      });
     }
 
     return null;
