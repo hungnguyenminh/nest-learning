@@ -10,11 +10,10 @@ import { CommissionsModule } from './modules/commissions/commissions.module';
 import { SettingModule } from './modules/setting/setting.module';
 import { SaleModule } from './modules/sale/sale.module';
 import { PaymentModule } from './modules/payment/payment.module';
-import { OrderProductModule } from './modules/order_product/order_product.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { CartsModule } from './modules/carts/carts.module';
 import { ProductsModule } from '@/modules/products/products.module';
-import { CartProductModule } from '@/modules/cart_product/cart_product.module';
+import { AttributesModule } from './modules/attributes/attributes.module';
 
 @Module({
   imports: [
@@ -66,14 +65,13 @@ import { CartProductModule } from '@/modules/cart_product/cart_product.module';
     AuthModule,
     CategoriesModule,
     ProductsModule,
-    CartProductModule,
     CartsModule,
     OrdersModule,
-    OrderProductModule,
     PaymentModule,
     SaleModule,
     SettingModule,
     CommissionsModule,
+    AttributesModule,
   ],
 })
 export class AppModule {}

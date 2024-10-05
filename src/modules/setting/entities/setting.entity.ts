@@ -3,12 +3,14 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { UserEntity } from '@/modules/users/entities/user.entity';
 
 @Entity({ name: 'settings' })
-export class Setting {
+export class SettingEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -32,4 +34,7 @@ export class Setting {
     name: 'deleted_at',
   })
   deleted_at: Date;
+
+  @OneToOne(() => UserEntity, (user) => user.setting)
+  user: UserEntity;
 }

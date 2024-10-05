@@ -1,3 +1,4 @@
+export class Attribute {}
 import {
   Column,
   CreateDateColumn,
@@ -7,19 +8,19 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity({ name: 'order_product' })
-export class OrderProduct {
+@Entity({ name: 'attributes' })
+export class Commission {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  order_id: string;
+  code: string;
 
   @Column()
-  product_id: string;
+  name: string;
 
   @Column()
-  quantity: string;
+  description: string;
 
   @CreateDateColumn({
     name: 'created_at',

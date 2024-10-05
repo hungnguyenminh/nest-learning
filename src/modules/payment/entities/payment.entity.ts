@@ -3,12 +3,15 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { CommissionEntity } from '@/modules/commissions/entities/commission.entity';
+import { OrderEntity } from '@/modules/orders/entities/order.entity';
 
 @Entity({ name: 'payments' })
-export class Payment {
+export class PaymentEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -38,4 +41,7 @@ export class Payment {
     name: 'deleted_at',
   })
   deleted_at: Date;
+
+  @OneToOne(() => OrderEntity, (order) => order.payment)
+  order: OrderEntity;
 }

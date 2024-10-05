@@ -1,56 +1,62 @@
 import {
   Column,
   CreateDateColumn,
-  DeleteDateColumn,
   Entity,
+  OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { CommissionEntity } from '@/modules/commissions/entities/commission.entity';
+import { SaleEntity } from '@/modules/sale/entities/sale.entity';
+import { CartEntity } from '@/modules/carts/entities/cart.entity';
+import { OrderEntity } from '@/modules/orders/entities/order.entity';
+import { SettingEntity } from '@/modules/setting/entities/setting.entity';
 
-@Entity({ name: 'users' })
+@Entity('users')
 export class UserEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  full_name: string;
+  @Column({ type: 'varchar' })
+  fullName: string;
 
-  @Column()
-  phone_number: string;
+  @Column({ type: 'varchar' })
+  phoneNumber: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   email: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   address: string;
 
-  @Column()
-  agency_code: string;
-
-  @Column()
-  agency_level: number;
-
-  @Column()
-  referal_agent_code: string;
-
-  @Column()
-  sales: number;
-
-  @Column()
+  @Column({ type: 'varchar' })
   password: string;
 
-  @CreateDateColumn({
-    name: 'created_at',
-  })
-  created_at: Date;
+  @Column({ type: 'varchar' })
+  agencyCode: string;
 
-  @UpdateDateColumn({
-    name: 'updated_at',
-  })
-  updated_at: Date;
+  @Column({ type: 'varchar' })
+  agencyLevel: string;
 
-  @DeleteDateColumn({
-    name: 'deleted_at',
-  })
-  deleted_at: Date;
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @OneToOne(() => CommissionEntity, (commission) => commission.user)
+  commission: CommissionEntity;
+
+  @OneToOne(() => SaleEntity, (sale) => sale.user)
+  sale: SaleEntity;
+
+  @OneToOne(() => CartEntity, (cart) => cart.user)
+  cart: CartEntity;
+
+  @OneToOne(() => SettingEntity, (setting) => setting.user)
+  setting: CartEntity;
+
+  @OneToMany(() => OrderEntity, (order) => order.user)
+  orders: OrderEntity[];
 }

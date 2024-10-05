@@ -1,41 +1,23 @@
-import {
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { ProductEntity } from '@/modules/products/entities/product.entity';
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity({ name: 'categories' })
-export class Category {
+@Entity('categories')
+export class CategoryEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  name_categories: string;
+  @Column({ type: 'varchar' })
+  nameCategories: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   description: string;
 
-  @Column()
-  total_product: number;
+  @Column({ type: 'int' })
+  totalProduct: number;
 
-  @Column()
-  total_product_paid: number;
+  @Column({ type: 'int' })
+  totalProductPaid: number;
 
-  @CreateDateColumn({
-    name: 'created_at',
-  })
-  created_at: Date;
-
-  @UpdateDateColumn({
-    name: 'updated_at',
-  })
-  updated_at: Date;
-
-  @DeleteDateColumn({
-    name: 'deleted_at',
-  })
-  deleted_at: Date;
+  @ManyToMany(() => ProductEntity, (product) => product.categories)
+  products: ProductEntity[];
 }
