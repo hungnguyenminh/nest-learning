@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { AuthDto, RegisterUserDto, SendMailDto } from './dto/auth.dto';
+import { AuthDto, RegisterUserDto } from './dto/auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import { MailerService } from '@nestjs-modules/mailer';
 import { AuthRepository } from '@/modules/auth/auth.repository';
 import { randomBytes } from 'crypto';
+import { TemporaryOtpRepository } from '@/modules/temporary-otp/temporary-otp.repository';
+import { classToPlain } from 'class-transformer';
 
 const fakeUsers = [
   {
@@ -23,6 +25,7 @@ export class AuthService {
     private jwtService: JwtService,
     private authRepository: AuthRepository,
     private mailService: MailerService,
+    private tmpOtpRepository: TemporaryOtpRepository,
   ) {}
   validateUser({ username, password }: AuthDto) {
     const findUser = fakeUsers.find((item) => item.username === username);
@@ -83,13 +86,23 @@ export class AuthService {
       await this.authRepository.findUserByRefferCode(randomCodeRefferCode);
 
     if (findUser.length === 0 && findUserByRefferCode.length === 0) {
-      return await this.authRepository.createUser({
+      const createUser = await this.authRepository.createUser({
         ...registerDto,
         referrerCode: `LF-${randomCodeRefferCode}`,
         agencyCode: agencyCode ?? null,
         agencyLevel: agencyLevel ?? null,
         isActive: !!agencyCode,
       });
+
+      const otp = randomBytes(4).toString('hex').substring(0, 5).toUpperCase();
+
+      await this.tmpOtpRepository.create({
+        user_id: createUser.id,
+        email: createUser.email,
+        otp: otp,
+      });
+
+      return classToPlain(createUser);
     }
 
     return null;

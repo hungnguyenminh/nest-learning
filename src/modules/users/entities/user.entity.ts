@@ -12,6 +12,7 @@ import { SaleEntity } from '@/modules/sale/entities/sale.entity';
 import { CartEntity } from '@/modules/carts/entities/cart.entity';
 import { OrderEntity } from '@/modules/orders/entities/order.entity';
 import { SettingEntity } from '@/modules/setting/entities/setting.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity('users')
 export class UserEntity {
@@ -30,6 +31,7 @@ export class UserEntity {
   @Column({ type: 'varchar' })
   address: string;
 
+  @Exclude()
   @Column({ type: 'varchar' })
   password: string;
 

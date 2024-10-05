@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthDto, RegisterUserDto, SendMailDto } from './dto/auth.dto';
+import { AuthDto, RegisterUserDto } from './dto/auth.dto';
 import { JwtGuards } from '@/modules/auth/guards/jwt.guards';
 import { Request, Response } from 'express';
 import { ResponseHelper } from '@/helpers/responseHelper';
@@ -18,7 +18,6 @@ import { ResponseHelper } from '@/helpers/responseHelper';
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-
     private readonly response: ResponseHelper,
   ) {}
 

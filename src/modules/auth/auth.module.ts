@@ -9,6 +9,8 @@ import { AuthRepository } from '@/modules/auth/auth.repository';
 import { UserEntity } from '@/modules/users/entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ResponseHelper } from '@/helpers/responseHelper';
+import { TemporaryOtpRepository } from '@/modules/temporary-otp/temporary-otp.repository';
+import { TemporaryOtpEntity } from '@/modules/temporary-otp/entities/temporary-otp.entity';
 
 @Module({
   imports: [
@@ -19,7 +21,7 @@ import { ResponseHelper } from '@/helpers/responseHelper';
         expiresIn: '1d',
       },
     }),
-    TypeOrmModule.forFeature([UserEntity]),
+    TypeOrmModule.forFeature([UserEntity, TemporaryOtpEntity]),
   ],
   controllers: [AuthController],
   providers: [
@@ -28,6 +30,7 @@ import { ResponseHelper } from '@/helpers/responseHelper';
     JwtStrategy,
     AuthRepository,
     ResponseHelper,
+    TemporaryOtpRepository,
   ],
 })
 export class AuthModule {}

@@ -15,6 +15,7 @@ import { CartsModule } from './modules/carts/carts.module';
 import { ProductsModule } from '@/modules/products/products.module';
 import { AttributesModule } from './modules/attributes/attributes.module';
 import { UserSeederModule } from '@/database/seeder/userSeeder/userSeeder.module';
+import { TemporaryOtpModule } from './modules/temporary-otp/temporary-otp.module';
 
 @Module({
   imports: [
@@ -74,6 +75,7 @@ import { UserSeederModule } from '@/database/seeder/userSeeder/userSeeder.module
     SettingModule,
     CommissionsModule,
     AttributesModule,
+    TemporaryOtpModule,
   ],
 })
 export class AppModule {}
