@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   HttpException,
+  Param,
   Post,
   Req,
   Res,
@@ -39,7 +40,11 @@ export class AuthController {
     const register = await this.authService.register(registerDto);
 
     if (register) {
-      return this.response.responseSuccess(res, register);
+      return this.response.responseSuccess({
+        res: res,
+        data: register,
+        message: 'done',
+      });
     }
 
     return this.response.responseErrors({
@@ -57,10 +62,22 @@ export class AuthController {
     return req.user;
   }
 
-  @Post('mail')
-  async testMail() {
-    await this.authService.sendMail();
+  @Get('mail/:user_id')
+  async testMail(@Param('user_id') user_id: string, @Res() res: Response) {
+    const mail = await this.authService.sendMail(user_id);
 
-    return 'ok';
+    if (mail) {
+      return this.response.responseSuccess({
+        res: res,
+        code: 200,
+        data: null,
+        message: 'Gửi OTP thành công',
+      });
+    }
+
+    return this.response.responseErrors({
+      res: res,
+      message: 'Người dùng không tồn tại',
+    });
   }
 }

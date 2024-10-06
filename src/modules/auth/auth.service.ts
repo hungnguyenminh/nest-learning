@@ -6,6 +6,7 @@ import { AuthRepository } from '@/modules/auth/auth.repository';
 import { randomBytes } from 'crypto';
 import { TemporaryOtpRepository } from '@/modules/temporary-otp/temporary-otp.repository';
 import { classToPlain } from 'class-transformer';
+import { IsNumber } from 'class-validator';
 
 const fakeUsers = [
   {
@@ -41,35 +42,45 @@ export class AuthService {
     }
   }
 
-  async sendMail() {
-    const otp = randomBytes(4).toString('hex').substring(0, 5).toUpperCase();
+  async sendMail(user_id: string) {
+    if (isNaN(parseInt(user_id, 10))) {
+      return null;
+    }
 
-    await this.mailService
-      .sendMail({
-        to: 'hungnm.17k2@gmail.com',
-        subject: otp,
-        text: 'welcome',
-        template: 'register',
-        context: {
-          name: 'sss',
-          activationCode: otp,
-        },
-      })
-      .then((e) => {
-        console.log('e then', e);
-        return {
-          status: true,
-          message: e,
-        };
-      })
-      .catch((e) => {
-        console.log('e catch', e);
-        return {
-          status: false,
-          message: e,
-        };
-      });
-    return 'ok';
+    const findOtpTmp = await this.tmpOtpRepository.findOtp(
+      parseInt(user_id, 10),
+    );
+
+    if (findOtpTmp) {
+      const otp = randomBytes(4).toString('hex').substring(0, 5).toUpperCase();
+
+      await this.mailService
+        .sendMail({
+          to: findOtpTmp.email,
+          subject: otp,
+          text: 'welcome',
+          template: 'register',
+          context: {
+            name: findOtpTmp.name,
+            activationCode: otp,
+          },
+        })
+        .then((e) => {
+          console.log('e then', e);
+          return {
+            status: true,
+            message: e,
+          };
+        })
+        .catch((e) => {
+          console.log('e catch', e);
+          return {
+            status: false,
+            message: e,
+          };
+        });
+      return 'ok';
+    } else return null;
   }
 
   async register(registerDto: RegisterUserDto) {
@@ -99,6 +110,7 @@ export class AuthService {
       await this.tmpOtpRepository.create({
         user_id: createUser.id,
         email: createUser.email,
+        name: createUser.fullName,
         otp: otp,
       });
 

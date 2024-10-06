@@ -12,6 +12,9 @@ export class TemporaryOtpEntity {
   email: string;
 
   @Column()
+  name: string;
+
+  @Column()
   otp: string;
 
   @Column({

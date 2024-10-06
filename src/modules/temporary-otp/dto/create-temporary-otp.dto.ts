@@ -8,5 +8,8 @@ export class CreateTemporaryOtpDto {
   email: string;
 
   @IsNotEmpty()
+  name: string;
+
+  @IsNotEmpty()
   otp: string;
 }

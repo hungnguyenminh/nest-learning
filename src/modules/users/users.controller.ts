@@ -26,14 +26,22 @@ export class UsersController {
   @Post()
   async create(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
     const resCreateUser = await this.usersService.create(createUserDto);
-    return this.response.responseSuccess(res, resCreateUser);
+    return this.response.responseSuccess({
+      res: res,
+      data: resCreateUser,
+      message: 'succcess',
+    });
   }
 
   @Get()
   async findAll(@Query() paginationDto: PaginationDto, @Res() res: Response) {
     const findAllTask = await this.usersService.findAll(paginationDto);
 
-    return this.response.responseSuccess(res, findAllTask);
+    return this.response.responseSuccess({
+      res: res,
+      data: findAllTask,
+      message: 'succeess',
+    });
   }
 
   @Get(':id')
