@@ -1,11 +1,4 @@
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-  MinLength,
-} from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, MinLength } from 'class-validator';
 import { Optional } from '@nestjs/common';
 
 export class AuthDto {
@@ -50,4 +43,26 @@ export class RegisterUserDto {
 
   @IsOptional()
   referrerCode: string;
+}
+
+export class UpdateUserDto {
+  @IsOptional()
+  @IsNotEmpty()
+  fullName?: string;
+
+  @IsOptional()
+  @IsNotEmpty()
+  phoneNumber?: string;
+
+  @IsOptional()
+  @IsNotEmpty()
+  address?: string;
+
+  @IsOptional()
+  @IsNotEmpty()
+  isActive?: boolean;
+
+  @IsOptional()
+  @IsNotEmpty()
+  referrerCode?: string;
 }

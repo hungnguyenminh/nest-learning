@@ -7,6 +7,8 @@ import { randomBytes } from 'crypto';
 import { TemporaryOtpRepository } from '@/modules/temporary-otp/temporary-otp.repository';
 import { classToPlain } from 'class-transformer';
 import { IsNumber } from 'class-validator';
+import { SendOtpDto } from '@/modules/temporary-otp/dto/create-temporary-otp.dto';
+import { SendOtpEnum } from '@/modules/auth/auth.enum';
 
 const fakeUsers = [
   {
@@ -42,47 +44,6 @@ export class AuthService {
     }
   }
 
-  async sendMail(user_id: string) {
-    if (isNaN(parseInt(user_id, 10))) {
-      return null;
-    }
-
-    const findOtpTmp = await this.tmpOtpRepository.findOtp(
-      parseInt(user_id, 10),
-    );
-
-    if (findOtpTmp) {
-      const otp = randomBytes(4).toString('hex').substring(0, 5).toUpperCase();
-
-      await this.mailService
-        .sendMail({
-          to: findOtpTmp.email,
-          subject: otp,
-          text: 'welcome',
-          template: 'register',
-          context: {
-            name: findOtpTmp.name,
-            activationCode: otp,
-          },
-        })
-        .then((e) => {
-          console.log('e then', e);
-          return {
-            status: true,
-            message: e,
-          };
-        })
-        .catch((e) => {
-          console.log('e catch', e);
-          return {
-            status: false,
-            message: e,
-          };
-        });
-      return 'ok';
-    } else return null;
-  }
-
   async register(registerDto: RegisterUserDto) {
     const { email, agencyCode, agencyLevel } = registerDto;
 
@@ -114,9 +75,95 @@ export class AuthService {
         otp: otp,
       });
 
+      await this.sendMail({
+        email: createUser.email,
+        name: createUser.fullName,
+        otp: otp,
+      });
+
       return classToPlain(createUser);
     }
 
     return null;
+  }
+
+  async sendOtpViaMail(user_id: string) {
+    if (isNaN(parseInt(user_id, 10))) {
+      return null;
+    }
+
+    const findOtpTmp = await this.tmpOtpRepository.findOtp(
+      parseInt(user_id, 10),
+    );
+
+    if (findOtpTmp) {
+      await this.sendMail({
+        email: findOtpTmp.email,
+        name: findOtpTmp.name,
+        otp: findOtpTmp.otp,
+      });
+
+      return findOtpTmp;
+    } else return null;
+  }
+
+  async sendMail(data: { email: string; name: string; otp: string }) {
+    await this.mailService
+      .sendMail({
+        to: data.email,
+        subject: data.otp,
+        text: 'welcome',
+        template: 'register',
+        context: {
+          name: data.name,
+          activationCode: data.otp,
+        },
+      })
+      .then((e) => {
+        console.log('e then', e);
+        return {
+          status: true,
+          message: e,
+        };
+      })
+      .catch((e) => {
+        console.log('e catch', e);
+        return {
+          status: false,
+          message: e,
+        };
+      });
+    return 'ok';
+  }
+
+  async confirmOtp(sendOtpDto: SendOtpDto) {
+    const findOtp = await this.tmpOtpRepository.findOtp(sendOtpDto.user_id);
+
+    if (!findOtp) {
+      return SendOtpEnum.NOT_FOUND_USER;
+    }
+
+    const now = new Date();
+    const expireDate = new Date(findOtp.expiresAt);
+
+    if (now.getTime() >= expireDate.getTime()) {
+      return SendOtpEnum.EXPRIED;
+    }
+
+    if (findOtp.otp === sendOtpDto.otp) {
+      const user = await this.authRepository.findUserByEmail(findOtp.email);
+
+      if (user) {
+        await this.authRepository.updateUser(sendOtpDto.user_id, {
+          isActive: true,
+        });
+
+        return sendOtpDto;
+      }
+
+      return SendOtpEnum.NOT_FOUND_USER;
+    }
+
+    return SendOtpEnum.WRONG_OTP;
   }
 }

@@ -14,6 +14,8 @@ import { AuthDto, RegisterUserDto } from './dto/auth.dto';
 import { JwtGuards } from '@/modules/auth/guards/jwt.guards';
 import { Request, Response } from 'express';
 import { ResponseHelper } from '@/helpers/responseHelper';
+import { SendOtpDto } from '@/modules/temporary-otp/dto/create-temporary-otp.dto';
+import { SendOtpEnum } from '@/modules/auth/auth.enum';
 
 @Controller('auth')
 export class AuthController {
@@ -63,14 +65,17 @@ export class AuthController {
   }
 
   @Get('mail/:user_id')
-  async testMail(@Param('user_id') user_id: string, @Res() res: Response) {
-    const mail = await this.authService.sendMail(user_id);
+  async sendOtpViaMail(
+    @Param('user_id') user_id: string,
+    @Res() res: Response,
+  ) {
+    const mail = await this.authService.sendOtpViaMail(user_id);
 
     if (mail) {
       return this.response.responseSuccess({
         res: res,
         code: 200,
-        data: null,
+        data: mail,
         message: 'Gửi OTP thành công',
       });
     }
@@ -78,6 +83,39 @@ export class AuthController {
     return this.response.responseErrors({
       res: res,
       message: 'Người dùng không tồn tại',
+    });
+  }
+
+  @Post('confirm-otp')
+  async confirmOtp(@Body() sendOtpDto: SendOtpDto, @Res() res: Response) {
+    const mail = await this.authService.confirmOtp(sendOtpDto);
+
+    if (mail === SendOtpEnum.NOT_FOUND_USER) {
+      return this.response.responseErrors({
+        res: res,
+        message: 'NOT_FOUND_USER!',
+      });
+    }
+
+    if (mail === SendOtpEnum.EXPRIED) {
+      return this.response.responseErrors({
+        res: res,
+        message: 'EXPRIED!',
+      });
+    }
+
+    if (mail === SendOtpEnum.WRONG_OTP) {
+      return this.response.responseErrors({
+        res: res,
+        message: 'WRONG_OTP!',
+      });
+    }
+
+    return this.response.responseSuccess({
+      res: res,
+      code: 200,
+      data: mail,
+      message: 'Gửi OTP thành công',
     });
   }
 }

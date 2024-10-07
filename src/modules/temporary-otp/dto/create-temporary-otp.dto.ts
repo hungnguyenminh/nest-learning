@@ -1,4 +1,4 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CreateTemporaryOtpDto {
   @IsNotEmpty()
@@ -9,6 +9,14 @@ export class CreateTemporaryOtpDto {
 
   @IsNotEmpty()
   name: string;
+
+  @IsNotEmpty()
+  otp: string;
+}
+
+export class SendOtpDto {
+  @IsOptional()
+  user_id: number;
 
   @IsNotEmpty()
   otp: string;
