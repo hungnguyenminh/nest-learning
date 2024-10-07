@@ -43,4 +43,27 @@ export class TemporaryOtpRepository {
 
     return null;
   }
+
+  async updateOtp(id: number, otp: string) {
+    const findOtp = await this.findOtp(id);
+
+    if (!findOtp) {
+      return null;
+    }
+
+    const now = new Date();
+    const expiresAt = addMinutes(now, 10);
+
+    findOtp.otp = otp;
+    findOtp.expiresAt = expiresAt;
+
+    let updateUser;
+    try {
+      updateUser = await this.tmpOtpRepository.save(findOtp);
+    } catch (e) {
+      console.log('updateUser e', e);
+    }
+
+    return updateUser;
+  }
 }

@@ -125,13 +125,22 @@ export class AuthService {
     );
 
     if (findOtpTmp) {
+      const genOtp = await this.genRandomRefferCode();
+
+      console.log('genOtp', genOtp);
+
+      const updateOtp = await this.tmpOtpRepository.updateOtp(
+        parseInt(user_id, 10),
+        genOtp,
+      );
+
       await this.sendMail({
-        email: findOtpTmp.email,
-        name: findOtpTmp.name,
-        otp: findOtpTmp.otp,
+        email: updateOtp.email,
+        name: updateOtp.name,
+        otp: genOtp,
       });
 
-      return findOtpTmp;
+      return updateOtp;
     } else return null;
   }
 

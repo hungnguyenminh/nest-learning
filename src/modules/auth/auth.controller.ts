@@ -62,7 +62,7 @@ export class AuthController {
     return req.user;
   }
 
-  @Get('mail/:user_id')
+  @Get('resend-otp/:user_id')
   async sendOtpViaMail(
     @Param('user_id') user_id: string,
     @Res() res: Response,
