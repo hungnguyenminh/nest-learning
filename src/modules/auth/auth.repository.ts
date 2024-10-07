@@ -4,6 +4,7 @@ import { UserEntity } from '@/modules/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { RegisterUserDto, UpdateUserDto } from '@/modules/auth/dto/auth.dto';
 import * as bcrypt from 'bcrypt';
+import { randomBytes } from 'crypto';
 
 @Injectable()
 export class AuthRepository {

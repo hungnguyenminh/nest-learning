@@ -44,11 +44,7 @@ export class AuthService {
     }
   }
 
-  async register(registerDto: RegisterUserDto) {
-    const { email, agencyCode, agencyLevel } = registerDto;
-
-    const findUser = await this.authRepository.findUserByEmail(email);
-
+  async genRandomRefferCode() {
     const randomCodeRefferCode = randomBytes(4)
       .toString('hex')
       .substring(0, 7)
@@ -57,34 +53,66 @@ export class AuthService {
     const findUserByRefferCode =
       await this.authRepository.findUserByRefferCode(randomCodeRefferCode);
 
-    if (findUser.length === 0 && findUserByRefferCode.length === 0) {
-      const createUser = await this.authRepository.createUser({
+    if (findUserByRefferCode.length === 0) {
+      return randomCodeRefferCode;
+    } else await this.genRandomRefferCode();
+  }
+
+  async register(
+    registerDto: RegisterUserDto,
+    admin?: {
+      user_id: string;
+      referrerCode: string;
+      agencyLevel: number;
+    },
+  ) {
+    const { email, agencyCode, agencyLevel } = registerDto;
+
+    const findUser = await this.authRepository.findUserByEmail(email);
+
+    // user đã tồn tại
+    if (findUser.length > 0) {
+      return null;
+    }
+
+    let createUser;
+
+    const randomCodeRefferCode = await this.genRandomRefferCode();
+
+    if (admin) {
+      createUser = await this.authRepository.createUser({
+        ...registerDto,
+        referrerCode: `LF-${randomCodeRefferCode}`,
+        agencyCode: admin.referrerCode,
+        agencyLevel: admin.agencyLevel + 1,
+        isActive: !!agencyCode,
+      });
+    } else {
+      createUser = await this.authRepository.createUser({
         ...registerDto,
         referrerCode: `LF-${randomCodeRefferCode}`,
         agencyCode: agencyCode ?? null,
         agencyLevel: agencyLevel ?? null,
         isActive: !!agencyCode,
       });
-
-      const otp = randomBytes(4).toString('hex').substring(0, 5).toUpperCase();
-
-      await this.tmpOtpRepository.create({
-        user_id: createUser.id,
-        email: createUser.email,
-        name: createUser.fullName,
-        otp: otp,
-      });
-
-      await this.sendMail({
-        email: createUser.email,
-        name: createUser.fullName,
-        otp: otp,
-      });
-
-      return classToPlain(createUser);
     }
 
-    return null;
+    const otp = randomBytes(4).toString('hex').substring(0, 5).toUpperCase();
+
+    await this.tmpOtpRepository.create({
+      user_id: createUser.id,
+      email: createUser.email,
+      name: createUser.fullName,
+      otp: otp,
+    });
+
+    await this.sendMail({
+      email: createUser.email,
+      name: createUser.fullName,
+      otp: otp,
+    });
+
+    return classToPlain(createUser);
   }
 
   async sendOtpViaMail(user_id: string) {
